@@ -1,52 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-// import List from './components/List.jsx';
-
-// class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       currentPage: 'petinfo',
-//       petInfoFields: [
-//         'Name',
-//         'Gender',
-//         'Birthdate',
-//         'Species',
-//         'Breed + Color',
-//         'Weight',
-//         'Microchip ID',
-//       ],
-//       vaccinationFields: ['Name', 'Frequency', 'Last Given'],
-//       medicationFields: ['Name', 'Use', 'Dosage', 'Frequency'],
-//     };
-//   }
-
-//   componentDidMount() {
-//     $.ajax({
-//       url: '/items',
-//       success: (data) => {
-//         this.setState({
-//           items: data,
-//         });
-//       },
-//       error: (err) => {
-//         console.log('err', err);
-//       },
-//     });
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <h1>Item List</h1>
-//         <List petInfoFields={this.state.petInfoFields} />
-//       </div>
-//     );
-//   }
-// }
-
-// ReactDOM.render(<App />, document.getElementById('app'));
+import FlipCard from 'react-flipcard';
 
 class App extends React.Component {
   constructor(props) {
@@ -66,57 +21,74 @@ class App extends React.Component {
       medicationFields: ['Name', 'Use', 'Dosage', 'Frequency'],
     };
     this.handleClick = this.handleClick.bind(this);
-    this.handlePurchase = this.handlePurchase.bind(this);
+    this.showAllPets = this.showAllPets.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // renders the next form when submit button is clicked
   handleClick(event) {
     if (this.state.currentPage === 'petInfo') {
-      this.setState({ currentPage: 'vaccineInfo' }, function() {
+      this.setState({ currentPage: 'vaccinationInfo' }, () => {
         console.log(this.state);
       });
-    } else if (this.state.currentPage === 'vaccineInfo') {
-      this.setState({ currentPage: 'medicationInfo' }, function() {
+      $.ajax({
+        url: '/',
+        method: 'POST',
+        data: { petInfo: this.state.petInfo },
+        success: function(data) {
+          console.log('here is data returned from server', data);
+        },
+        error: function(error) {
+          console.log('error running the post request', error);
+        },
+      });
+    } else if (this.state.currentPage === 'vaccinationInfo') {
+      this.setState({ currentPage: 'medicationInfo' }, () => {
         console.log(this.state);
       });
     } else if (this.state.currentPage === 'medicationInfo') {
-      this.setState({ currentPage: 'displayAll' }, function() {
+      this.setState({ currentPage: 'displayAll' }, () => {
         console.log(this.state);
       });
     }
 
-    $.ajax({
-      url: '/',
-      method: 'POST',
-      data: JSON.stringify({ test: 'data' }),
-      success: function(data) {
-        console.log('here is data return from server', data);
-      },
-      error: function(error) {
-        console.log('error', error);
-      },
-    });
+    // $.ajax({
+    //   url: '/',
+    //   method: 'POST',
+    //   data: JSON.stringify({ test: 'data' }),
+    //   success: function(data) {
+    //     console.log('here is data return from server', data);
+    //   },
+    //   error: function(error) {
+    //     console.log('error', error);
+    //   },
+    // });
   }
 
   handleChange(event) {
-    var key = event.target.className;
-    console.log(this.state.accountInfoFields.includes(key));
-    if (this.state.accountInfoFields.includes(key)) {
+    const key = event.target.className;
+    const name = event.target.name;
+    console.log('value', event.target.value)
+    console.log(this.state.petInfoFields.includes(key));
+    let newStateProp = 'myProp' + key;
+    console.log('nsp', newStateProp)
+    if (this.state.petInfoFields.includes(key)) {
       this.setState(
-        { petInfo: { [event.target.className]: event.target.value } },
+        // { petInfo: { [event.target.className]: event.target.value } },
+        newStateProp: 'what',
         function() {
-          console.log(this.state);
+          console.log('state is', this.state);
         },
       );
       // {[event.target.className]: event.target.value}
-    } else if (this.state.shippingInfoFields.includes(key)) {
+    } else if (this.state.vaccinationFields.includes(key)) {
       this.setState(
-        { vaccineInfo: { [event.target.className]: event.target.value } },
+        { vaccinationInfo: { [event.target.className]: event.target.value } },
         function() {
           console.log(this.state);
         },
       );
-    } else if (this.state.paymentInfoFields.includes(key)) {
+    } else if (this.state.medicationFields.includes(key)) {
       this.setState(
         { medicationInfo: { [event.target.className]: event.target.value } },
         function() {
@@ -126,7 +98,7 @@ class App extends React.Component {
     }
   }
 
-  handlePurchase(event) {
+  showAllPets(event) {
     //submit a get request to server
     //retrieve the database data (use query)
     //render it on the dom
@@ -150,7 +122,7 @@ class App extends React.Component {
         <h1>PetInfo</h1>
         <DisplayedForm
           handleClick={this.handleClick}
-          handlePurchase={this.handlePurchase}
+          showAllPets={this.handlePurchase}
           currentPage={this.state.currentPage}
           petInfoFields={this.state.petInfoFields}
           vaccinationFields={this.state.vaccinationFields}
@@ -186,6 +158,7 @@ var PetInformation = (props) => {
             title={field}
             handleChange={props.handleChange}
             className={field}
+            name={field}
           />
         ))}
       </form>
@@ -205,7 +178,11 @@ var VaccineInformation = (props) => {
     <div>
       <form className="vaccinationInfo">
         {vaccinationFields.map((field) => (
-          <FormField title={field} handleChange={props.handleChange} />
+          <FormField
+            title={field}
+            handleChange={props.handleChange}
+            name={field}
+          />
         ))}
       </form>
       <button type="button" className="next" onClick={handleClick}>
@@ -222,8 +199,12 @@ var MedicineInformation = (props) => {
   return (
     <div>
       <form className="medicationInfo">
-        {edicationFields.map((field) => (
-          <FormField title={field} handleChange={props.handleChange} />
+        {medicationFields.map((field) => (
+          <FormField
+            title={field}
+            handleChange={props.handleChange}
+            name={field}
+          />
         ))}
       </form>
       <button type="button" className="submit" onClick={handleClick}>
@@ -234,18 +215,18 @@ var MedicineInformation = (props) => {
   );
 };
 
-// var Confirmation = (props) => {
-//   var handlePurchase = props.handlePurchase;
-//   return (
-//     <div>
-//       <p>Confirmation</p>
-//       <button type="button" className="purchase" onClick={handlePurchase}>
-//         {' '}
-//         Purchase{' '}
-//       </button>
-//     </div>
-//   );
-// };
+var DisplayAll = (props) => {
+  var displayAllPets = props.displayAllPets;
+  return (
+    <div>
+      <p>Confirmation</p>
+      <button type="button" className="purchase" onClick={displayAllPets}>
+        {' '}
+        Purchase{' '}
+      </button>
+    </div>
+  );
+};
 
 var DisplayedForm = (props) => {
   var pageToDisplay = props.currentPage;
@@ -274,7 +255,7 @@ var DisplayedForm = (props) => {
       />
     );
   } else if (props.currentPage === 'confirmation') {
-    return <Confirmation handlePurchase={props.handlePurchase} />;
+    return <Confirmation handlePurchase={props.showAllPets} />;
   }
 };
 
