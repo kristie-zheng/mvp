@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import FlipCard from 'react-flipcard';
+import styled from 'styled-components';
 
 class App extends React.Component {
   constructor(props) {
@@ -134,6 +135,13 @@ class App extends React.Component {
   }
 }
 
+const PetCard = styled.span`
+  border: 1px solid gray;
+  padding: 10px
+  display: block;
+  width: 210px
+`;
+
 //each form field
 var FormField = (props) => {
   var handleChange = props.handleChange;
@@ -170,6 +178,7 @@ var PetInformation = (props) => {
   );
 };
 
+// form2 (vaccineInfo)
 var VaccineInformation = (props) => {
   var handleClick = props.handleClick;
   var vaccinationFields = props.vaccinationFields;
@@ -193,6 +202,7 @@ var VaccineInformation = (props) => {
   );
 };
 
+//form3 medication info
 var MedicineInformation = (props) => {
   var handleClick = props.handleClick;
   var medicationFields = props.medicationFields;
@@ -215,15 +225,19 @@ var MedicineInformation = (props) => {
   );
 };
 
+
+//form 4 (shows tiles)
 var DisplayAll = (props) => {
-  var displayAllPets = props.displayAllPets;
+  // var displayAllPets = props.displayAllPets;
   return (
     <div>
-      <p>Confirmation</p>
-      <button type="button" className="purchase" onClick={displayAllPets}>
-        {' '}
-        Purchase{' '}
-      </button>
+      <p>Your Pets</p>
+       <div>
+    <PetCard>
+      <img src='http://2.bp.blogspot.com/-EiNcwcrlXyU/UZfLXZoI7zI/AAAAAAAAFAE/1Rv63hRHMSE/s1600/Golden-Retriever.jpg' height='200' width='200'/> <br/>
+      <span> Goldie </span>
+    </PetCard>        
+      </div>
     </div>
   );
 };
@@ -254,11 +268,78 @@ var DisplayedForm = (props) => {
         handleChange={props.handleChange}
       />
     );
-  } else if (props.currentPage === 'confirmation') {
-    return <Confirmation handlePurchase={props.showAllPets} />;
+  } else if (props.currentPage === 'displayAll') {
+    return <DisplayAll showAll={props.showAllPets} />;
   }
 };
 
+// var Cards = React.createClass({
+//   getInitialState() {
+//     return {
+//       isFlipped: false
+//     };
+//   },
+
+//   showBack() {
+//     this.setState({
+//       isFlipped: true
+//     });
+//   },
+
+//   showFront() {
+//     this.setState({
+//       isFlipped: false
+//     });
+//   },
+
+//   handleOnFlip(flipped) {
+//     if (flipped) {
+//       this.refs.backButton.getDOMNode().focus();
+//     }
+//   },
+
+//   handleKeyDown(e) {
+//     if (this.state.isFlipped && e.keyCode === 27) {
+//       this.showFront();
+//     }
+//   },
+
+//   render() {
+//     return (
+//       <div>
+//         {/*
+//           The `disabled` attribute allows turning off the auto-flip
+//           on hover, or focus. This allows manual control over flipping.
+
+//           The `flipped` attribute indicates whether to show the front,
+//           or the back, with `true` meaning show the back.
+//         */}
+//         <FlipCard
+//           disabled={true}
+//           flipped={this.state.isFlipped}
+//           onFlip={this.handleOnFlip}
+//           onKeyDown={this.handleKeyDown}
+//         >
+//           <div>
+//             <div>Turtle</div>
+//             <img src= 'https://www.bing.com/th?id=OIP.i3Y1sljqEyH7kRasrjZ3DgHaEI&w=300&h=167&c=7&o=5&dpr=2&pid=1.7' height='200' width='200'/>
+//             <button type="button" onClick={this.showBack}>Show back</button>
+//           </div>
+//           <div>
+//             <div>Back</div>
+//             <button type="button" ref="backButton" onClick={this.showFront}>Vitals</button>
+//             <button type="button" ref="backButton" onClick={this.showFront}>Vaccines</button>
+//             <button type="button" ref="backButton" onClick={this.showFront}>Medications</button>
+//             <button type="button" ref="backButton" onClick={this.showFront}>Show front</button>
+//           </div>
+//         </FlipCard>
+
+//       </div>
+//     );
+//   }
+// });
+
+// React.render(<App/>, document.getElementById('container'));
 window.App = App;
 
 ReactDOM.render(<App />, document.getElementById('app'));
