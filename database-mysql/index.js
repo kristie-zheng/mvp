@@ -18,23 +18,3 @@ pgClient.connect((err) => {
   }
 });
 
-// placeholder template to assure that querying works
-
-// pgClient.query('SELECT * FROM reviews limit 10', (err, res) => {
-//   console.log('result of query', res.rows);
-//   pgClient.end();
-// });
-
-// module.exports = pgClient;
-
-// var selectAll = function(callback) {
-//   connection.query('SELECT * FROM items', function(err, results, fields) {
-//     if (err) {
-//       callback(err, null);
-//     } else {
-//       callback(null, results);
-//     }
-//   });
-// };
-
-// module.exports.selectAll = selectAll;
